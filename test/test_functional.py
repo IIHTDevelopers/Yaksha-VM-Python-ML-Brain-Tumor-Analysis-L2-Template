@@ -7,7 +7,7 @@ from model_trainer import create_cnn_model, train_model, evaluate_model
 from main import preprocess_image
 from test.TestUtils import TestUtils  # Assuming TestUtils is available
 
-class ConsoleValuesTest(unittest.TestCase):
+class FunctionalTest(unittest.TestCase):
 
     def setUp(self):
         """Setup before running test cases."""
@@ -23,11 +23,15 @@ class ConsoleValuesTest(unittest.TestCase):
             X, y = load_data(self.data_path)
             X_train, X_test, _, _ = split_data(X, y)
             training_samples = len(X_train)
-            is_valid = training_samples == 202  # Replace with actual count
-            self.test_obj.yakshaAssert("TestTrainingSamplesCount", is_valid, "functional")
-            print(f"Training Samples Count: {training_samples} → {'Passed' if is_valid else 'Failed'}")
+            if training_samples == 202:  # Replace with actual count
+                self.test_obj.yakshaAssert("TestTrainingSamplesCount", True, "functional")
+                print(f"Training Samples Count: {training_samples} → Passed")
+            else:
+                self.test_obj.yakshaAssert("TestTrainingSamplesCount", False, "functional")
+                print(f"Training Samples Count: {training_samples} → Failed")
         except Exception as e:
-            print("TestTrainingSamplesCount → Failed :")
+            self.test_obj.yakshaAssert("TestTrainingSamplesCount", False, "functional")
+            print(f"TestTrainingSamplesCount → Failed: ")
 
     def test_testing_samples_count(self):
         """Test if the number of testing samples is correct."""
@@ -35,11 +39,15 @@ class ConsoleValuesTest(unittest.TestCase):
             X, y = load_data(self.data_path)
             _, X_test, _, _ = split_data(X, y)
             testing_samples = len(X_test)
-            is_valid = testing_samples == 51  # Replace with actual count
-            self.test_obj.yakshaAssert("TestTestingSamplesCount", is_valid, "functional")
-            print(f"Testing Samples Count: {testing_samples} → {'Passed' if is_valid else 'Failed'}")
+            if testing_samples == 51:  # Replace with actual count
+                self.test_obj.yakshaAssert("TestTestingSamplesCount", True, "functional")
+                print(f"Testing Samples Count: {testing_samples} → Passed")
+            else:
+                self.test_obj.yakshaAssert("TestTestingSamplesCount", False, "functional")
+                print(f"Testing Samples Count: {testing_samples} → Failed")
         except Exception as e:
-            print("TestTestingSamplesCount → Failed ")
+            self.test_obj.yakshaAssert("TestTestingSamplesCount", False, "functional")
+            print(f"TestTestingSamplesCount → Failed:")
 
     def test_epoch_count(self):
         """Test if the number of training epochs equals 5."""
@@ -53,11 +61,15 @@ class ConsoleValuesTest(unittest.TestCase):
             history = train_model(model, X_train, y_train, epochs=self.epochs_to_check, batch_size=16)
             epoch_count = len(history.epoch)
 
-            is_valid = epoch_count == self.epochs_to_check
-            self.test_obj.yakshaAssert("TestEpochCount", is_valid, "functional")
-            print(f"Epoch Count: {epoch_count} → {'Passed' if is_valid else 'Failed'}")
+            if epoch_count == self.epochs_to_check:
+                self.test_obj.yakshaAssert("TestEpochCount", True, "functional")
+                print(f"Epoch Count: {epoch_count} → Passed")
+            else:
+                self.test_obj.yakshaAssert("TestEpochCount", False, "functional")
+                print(f"Epoch Count: {epoch_count} → Failed")
         except Exception as e:
-            print("TestEpochCount → Failed ")
+            self.test_obj.yakshaAssert("TestEpochCount", False, "functional")
+            print(f"TestEpochCount → Failed: ")
 
     def test_model_file_created(self):
         """Test if the model file is created successfully."""
@@ -71,11 +83,15 @@ class ConsoleValuesTest(unittest.TestCase):
             train_model(model, X_train, y_train, epochs=1, batch_size=16)
             model.save(self.model_path)
 
-            file_exists = os.path.exists(self.model_path)
-            self.test_obj.yakshaAssert("TestModelFileCreated", file_exists, "functional")
-            print(f"Model File Created: {'Passed' if file_exists else 'Failed'}")
+            if os.path.exists(self.model_path):
+                self.test_obj.yakshaAssert("TestModelFileCreated", True, "functional")
+                print("Model File Created → Passed")
+            else:
+                self.test_obj.yakshaAssert("TestModelFileCreated", False, "functional")
+                print("Model File Created → Failed")
         except Exception as e:
-            print("TestModelFileCreated → Failed ")
+            self.test_obj.yakshaAssert("TestModelFileCreated", False, "functional")
+            print(f"TestModelFileCreated → Failed: ")
 
     def test_prediction_Y7(self):
         """Test predictions for the test image Y7.jpg."""
@@ -86,11 +102,15 @@ class ConsoleValuesTest(unittest.TestCase):
 
             prediction = model.predict(preprocessed_img)
             result = "Tumor Detected" if prediction[0][0] > 0.5 else "No Tumor"
-            is_valid = result in ["Tumor Detected", "No Tumor"]
-            self.test_obj.yakshaAssert("TestPredictionY7", is_valid, "functional")
-            print(f"Test Image Prediction (Y7): {result} → {'Passed' if is_valid else 'Failed'}")
+            if result in ["Tumor Detected", "No Tumor"]:
+                self.test_obj.yakshaAssert("TestPredictionY7", True, "functional")
+                print(f"Test Image Prediction (Y7): {result} → Passed")
+            else:
+                self.test_obj.yakshaAssert("TestPredictionY7", False, "functional")
+                print(f"Test Image Prediction (Y7): {result} → Failed")
         except Exception as e:
-            print("TestPredictionY7 → Failed ")
+            self.test_obj.yakshaAssert("TestPredictionY7", False, "functional")
+            print(f"TestPredictionY7 → Failed: ")
 
 if __name__ == "__main__":
     unittest.main()
